@@ -21,6 +21,7 @@ exports.registerUser = async (req, res) => {
 // Login
 exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
+    const adminEmail = process.env.ADMIN_EMAIL;
 
 
     try {
@@ -39,7 +40,14 @@ exports.loginUser = async (req, res) => {
 
 
         req.session.user = { id: user.id, name: user.name, email: user.email };
-        // res.json({ message: 'Login successful', user: req.session.user });
+
+
+        // Redirect based on role
+        if (user.email === adminEmail) {
+            return res.redirect('/admin/dashboard');
+        }
+
+
         res.redirect('/home');
 
 
